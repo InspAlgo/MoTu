@@ -1,3 +1,6 @@
+# Setting
+build-MoTu-MinGW32-Debug/*
+
 # Prerequisites
 *.d
 
