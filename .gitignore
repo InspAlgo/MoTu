@@ -1,5 +1,10 @@
 # Setting
 build-MoTu-MinGW32-Debug/*
+MoTu/.vs/*
+MoTu/debug/*
+MoTu/release/*
+MoTu/GeneratedFiles/*
+MoTu/x64/*
 
 # Prerequisites
 *.d

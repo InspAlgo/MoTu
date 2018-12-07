@@ -26,13 +26,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    removal_vignetting.cpp
+    removal_vignetting.cpp \
+    Dark_Channel.cpp \
+    deblurring.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    Dark_Channel.h
 
 FORMS += \
         mainwindow.ui
 
 RESOURCES += \
     res.qrc
+    
+RC_ICONS = "res/brush.ico"  # 只需添加这一行即可设置程序图标
+
+DISTFILES +=

@@ -1,5 +1,9 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
+#if _MSC_VER >= 1600
+#pragma execution_character_set("utf-8")
+#endif
 
 #include <QMainWindow>
 #include <QMenu>
@@ -41,8 +45,6 @@ private:
     void InitMenu();  // 初始化菜单栏
     void AutoLabelSize();  // 自动调整 label 大小，使其比例和图片比例相同
 
-    void CheckHandle();  // 检查控制
-
 private slots:
     void FileOpen();
     void FileSave();
@@ -82,7 +84,11 @@ private slots:
 
     void on_pB_check_8_clicked();
 
-    void on_pb_result_8_clicked();
+    void on_pB_result_8_clicked();
+
+    void on_pB_check_9_clicked();
+
+    void on_pB_result_9_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -102,7 +108,9 @@ private:
 
     bool ctrl_is_pressed;  // 判断 Ctrl 键是否被按住
 
-    int pB_result_type[9];  // 检测结果
+    int pB_result_type[10];  // 检测结果
+
+    bool is_face;  // 图片中是否含有人脸 无-false 有-true
 
 };
 

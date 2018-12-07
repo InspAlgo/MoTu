@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>res/check.png</file>
         <file>res/cross.png</file>
+        <file>res/brush.ico</file>
     </qresource>
 </RCC>
