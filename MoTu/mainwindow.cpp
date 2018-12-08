@@ -297,6 +297,8 @@ void MainWindow::InitPamater()
     ui->label_image->installEventFilter(this);  // 事件捕捉，鼠标可以拖动图片控件
 
     this->is_face = false;
+    this->offset_bg = 0.0;
+    this->dark_channels = 0;
 
     for(int i = 0; i < 10; i++)
         this->pB_result_type[i] = 0;
@@ -489,8 +491,6 @@ void MainWindow::on_pB_check_clicked()
     {
         this->on_pB_check_2_clicked();
         this->on_pB_check_4_clicked();
-        this->on_pB_check_7_clicked();
-        this->on_pB_check_8_clicked();
     }
 
     this->on_pB_check_1_clicked();
@@ -500,25 +500,16 @@ void MainWindow::on_pB_check_clicked()
 // 美化所有
 void MainWindow::on_pB_tuning_clicked()
 {
-    this->on_pB_result_1_clicked();
+    this->on_pB_result_2_clicked();
+    this->on_pB_result_4_clicked();
 
-    // 如果不是人脸
-    if (!this->is_face)
-    {
-        this->on_pB_result_2_clicked();
-        this->on_pB_result_4_clicked();
-
-        // 先ACE再均衡化
-        this->on_pB_result_8_clicked();
-        this->on_pB_result_7_clicked();
-    }
-    else
-    {
-        this->on_pB_result_5_clicked();
-    }
+    this->on_pB_result_5_clicked();
 
     this->on_pB_result_6_clicked();
     this->on_pB_result_3_clicked();
+
+    this->on_pB_check_1_clicked();
+    this->on_pB_result_1_clicked();
 }
 
 // 曝光检测——检测
@@ -567,19 +558,62 @@ void MainWindow::on_pB_check_1_clicked()
         {
             ui->pB_result_1->setText(tr("过亮"));
             this->pB_result_type[1] = 1;
+            this->offset_bg = da;
         }
 
         else
         {
             ui->pB_result_1->setText(tr("过暗"));
             this->pB_result_type[1] = -1;
+            this->offset_bg = da;
         }
-
     }
     else
     {
         ui->pB_result_1->setText(tr("亮度正常"));
         this->pB_result_type[1] = 2;
+        this->offset_bg = da;
+    }
+
+}
+
+// 曝光程度
+void  MainWindow::OffsetBG(double &c, double &r)
+{
+    if (this->offset_bg >= 0)
+    {
+        if (this->offset_bg <= 50)
+        {
+            c = 10; r = 2.9;
+        }
+        else if (this->offset_bg <= 100)
+        {
+            c = 10; r = 3.01;
+        }
+        else
+        {
+            c = 10; r = 3.05;
+        }
+    }
+    else
+    {
+        if (this->offset_bg >= -15)
+        {
+            c = 0.99; r = 0.9;
+        }
+        else if (this->offset_bg >= -50)
+        {
+            c = 1; r = 0.9;
+        }
+        else if (this->offset_bg >= -80)
+        {
+            c = 0.99; r = 0.8;
+        }
+        else
+        {
+            c = 0.98; r = 0.6;
+        }
+
     }
 }
 
@@ -591,14 +625,17 @@ void MainWindow::on_pB_result_1_clicked()
 
     QImage image_old = ui->label_image->pixmap()->toImage();
     QImage ret;
-
+    double c, r;
+    
     switch (this->pB_result_type[1])
     {    
         case 1: 
-            ret = gammaTrans(image_old, 10, 3);
+            OffsetBG(c, r);
+            ret = gammaTrans(image_old, c, r);
             break;
         case -1:
-            ret = gammaTrans(image_old, 1, 0.4);
+            OffsetBG(c, r);
+            ret = gammaTrans(image_old, c, r);
             break;
         default:
             break;
@@ -624,7 +661,7 @@ void MainWindow::on_pB_check_2_clicked()
     QImage image = ui->label_image->pixmap()->toImage();
     Dark_Channel darkchannel(image);
     bool check = darkchannel.Detection();
-
+    this->dark_channels = darkchannel.midel;
     if(check)
     {
         ui->pB_result_2->setText(tr("NO"));
@@ -761,18 +798,18 @@ void MainWindow::on_pB_result_4_clicked()
 
     this->status_type = 1;
 
-    ui->label_image->pixmap()->toImage().save("$temptoMat$.png");
-    cv::Mat blurred = cv::imread("$temptoMat$.png", CV_LOAD_IMAGE_COLOR);
-    QFile::remove("$temptoMat$.png");
+    ui->label_image->pixmap()->toImage().save("$temptoMat$.jpg");
+    cv::Mat blurred = cv::imread("$temptoMat$.jpg", CV_LOAD_IMAGE_COLOR);
+    QFile::remove("$temptoMat$.jpg");
 
     cv::Mat deblurred;
     cv::Mat kernel;
     blindDeblurring(blurred, deblurred, kernel, 10);
 
-    imwrite("$tempresult$.png", deblurred);
+    imwrite("$tempresult$.bmp", deblurred);
 
-    QImage ret("$tempresult$.png");
-    QFile::remove("$tempresult$.png");
+    QImage ret("$tempresult$.bmp");
+    QFile::remove("$tempresult$.bmp");
     
     ui->label_image->setPixmap(QPixmap::fromImage(ret));
 
@@ -1087,4 +1124,90 @@ void MainWindow::on_pB_result_9_clicked()
     ui->pB_result_9->setText(tr("YES"));
     this->status_type = 1;
     this->pB_result_type[9] = 2;  // 完成美化
+}
+
+// 显示参数
+void MainWindow::on_pushButton_clicked()
+{
+    if (this->status_type == 0)
+    {
+        QMessageBox::about(NULL, tr("警告"), tr("未加载图片！"));
+        return;
+    }
+
+    int gray_sum = 0;     // 图片总灰度
+
+    QImage label_image = ui->label_image->pixmap()->toImage();
+
+    int image_width = label_image.width();
+    int image_height = label_image.height();
+
+
+    int pixel_gray = 0;  // 当前像素点的灰度值
+    int pixel_sum = image_width * image_height;    // 总像素数
+
+    int gray_array[256];  // 灰度数组
+    memset(gray_array,0,sizeof(gray_array));
+
+    // 统计灰度数组
+    for(int i = 0; i < image_width; i++)
+    {
+        for(int j = 0; j < image_height; j++)
+        {
+            pixel_gray = qGray(label_image.pixel(i, j));
+            gray_array[pixel_gray]++;
+            gray_sum += pixel_gray;
+        }
+    }
+
+    int gray_mean = gray_sum / pixel_sum;  // 平均灰度值
+
+    // 求灰度中位数，从两端开始搜，两端较大的减去较小的
+    int pointer_st = 0, pointer_ed = 255;
+    int gray_copy_array[256];
+    memcpy(gray_copy_array, gray_array,sizeof(gray_array));
+    while(pointer_ed > pointer_st)
+    {
+        if(gray_copy_array[pointer_st] > gray_copy_array[pointer_ed])
+        {
+            gray_copy_array[pointer_st] -= gray_copy_array[pointer_ed];
+            gray_copy_array[pointer_ed] = 0;
+        }
+        else
+        {
+            gray_copy_array[pointer_ed] -= gray_copy_array[pointer_st];
+            gray_copy_array[pointer_st] = 0;
+        }
+
+        if(gray_copy_array[pointer_st] <= 0)
+            pointer_st++;
+        else
+            gray_copy_array[pointer_st]--;
+
+        if(gray_copy_array[pointer_ed] <= 0)
+            pointer_ed--;
+        else
+            gray_copy_array[pointer_ed]--;
+    }
+
+    int gray_mid = (pointer_st + pointer_ed) / 2;  // 灰度中位数
+
+    float gray_standard_deviation = 0;  // 灰度标准差
+    int gray_max = 0;  // 最大灰度
+    for(int i = 0; i < 256; i++)  // 加权平均，而非直接 1/n
+    {
+        if(gray_array[pixel_gray] > gray_max)  // 考虑减少复杂度，所以把求最多灰度值放这里了
+            gray_max = gray_array[pixel_gray];
+
+        gray_standard_deviation += float((gray_mean - i)*(gray_mean - i))/float(pixel_sum)*float(gray_array[i]);
+    }
+
+    gray_standard_deviation = sqrt(gray_standard_deviation);
+
+    PamShow pam;
+    pam.InitGray(gray_array, gray_max);
+    pam.SetGray(pixel_sum, gray_mid, gray_mean, gray_standard_deviation);
+    pam.SetBG(this->offset_bg);
+    pam.SetDarkChannel(this->dark_channels);
+    pam.exec();
 }

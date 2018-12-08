@@ -71,7 +71,6 @@ bool Dark_Channel::Detection()
 		}
 	}
 
-	long midel = 0;
 	//最小值滤波
 	int a = 0;
 	//cout << sizeof(borderI)/sizeof(int) << endl;

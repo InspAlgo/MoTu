@@ -28,14 +28,17 @@ SOURCES += \
         mainwindow.cpp \
     removal_vignetting.cpp \
     Dark_Channel.cpp \
-    deblurring.cpp
+    deblurring.cpp \
+    pamshow.cpp
 
 HEADERS += \
         mainwindow.h \
-    Dark_Channel.h
+    Dark_Channel.h \
+    pamshow.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    pamshow.ui
 
 RESOURCES += \
     res.qrc

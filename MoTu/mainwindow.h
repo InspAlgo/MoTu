@@ -18,6 +18,8 @@
 #include <QCloseEvent>
 #include <QMouseEvent>
 
+#include "pamshow.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -44,6 +46,7 @@ private:
     void InitPamater();  // 初始化成员变量
     void InitMenu();  // 初始化菜单栏
     void AutoLabelSize();  // 自动调整 label 大小，使其比例和图片比例相同
+    void OffsetBG(double &c, double &r);
 
 private slots:
     void FileOpen();
@@ -55,40 +58,25 @@ private slots:
     void on_pB_tuning_clicked();
 
     void on_pB_check_1_clicked();
-
     void on_pB_result_1_clicked();
-
     void on_pB_check_2_clicked();
-
     void on_pB_result_2_clicked();
-
     void on_pB_check_3_clicked();
-
     void on_pB_result_3_clicked();
-
     void on_pB_check_4_clicked();
-
     void on_pB_result_4_clicked();
-
     void on_pB_check_5_clicked();
-
     void on_pB_result_5_clicked();
-
     void on_pB_check_6_clicked();
-
     void on_pB_result_6_clicked();
-
     void on_pB_check_7_clicked();
-
     void on_pB_result_7_clicked();
-
     void on_pB_check_8_clicked();
-
     void on_pB_result_8_clicked();
-
     void on_pB_check_9_clicked();
-
     void on_pB_result_9_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -111,6 +99,9 @@ private:
     int pB_result_type[10];  // 检测结果
 
     bool is_face;  // 图片中是否含有人脸 无-false 有-true
+
+    double offset_bg;  // 曝光程度
+    long dark_channels;  // 暗通道参数
 
 };
 

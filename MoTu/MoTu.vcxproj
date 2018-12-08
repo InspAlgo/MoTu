@@ -204,6 +204,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="meiyancpp.cpp" />
+    <ClCompile Include="pamshow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ACE_CPP.h" />
@@ -230,11 +231,18 @@
     </CustomBuild>
     <ClInclude Include="deblurring.h" />
     <ClInclude Include="meiyancpp.h" />
+    <QtMoc Include="pamshow.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\Anaconda\pkgs\python-3.6.5-h0c2934d_0\include;D:\OpenCV3.4.4\opencv\build\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT5\5.10.1\MSVC2017_64\include;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtWidgets;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtGui;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtANGLE;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtCore;.\debug;\include;.\..\..\..\QT5\5.10.1\MSVC2017_64\mkspecs\win32-msvc</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\MATLAB\extern\include;E:\Anaconda\pkgs\python-3.6.5-h0c2934d_0\include;D:\OpenCV3.4.4\opencv\build\include;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT5\5.10.1\MSVC2017_64\include;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtWidgets;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtGui;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtANGLE;.\..\..\..\QT5\5.10.1\MSVC2017_64\include\QtCore;.\release;\include;.\..\..\..\QT5\5.10.1\MSVC2017_64\mkspecs\win32-msvc</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
+    </QtMoc>
     <ClInclude Include="ui_mainwindow.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="mainwindow.ui">
     </QtUic>
+    <QtUic Include="pamshow.ui" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\check.png" />

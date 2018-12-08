@@ -148,9 +148,9 @@ void detectAndDraw(Mat& img,
 			right.y = img.rows;
 		}
 
-		// rectangle(img, left, right, Scalar(255, 0, 0));  // 人脸识别矩形框
-
-        isFace = true;
+		//rectangle(img, left, right, Scalar(255, 0, 0));  // 人脸识别矩形框
+        if (fabs(right.x - left.x) >= 50)
+            isFace = true;
 
 		Mat roi = img(Range(left.y, right.y), Range(left.x, right.x));
 		Mat dst;

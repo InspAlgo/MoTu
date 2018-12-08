@@ -11,6 +11,7 @@ using namespace std;
 class Dark_Channel
 {
 public:
+    long midel = 0;
 	QImage MainImage;
 	Dark_Channel(QImage sendimage);
 

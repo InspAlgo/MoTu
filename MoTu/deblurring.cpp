@@ -90,13 +90,13 @@ float measureBlur(const Mat &grayBlurred)
         }
     }
     sum/=(grayBlurred.rows * grayBlurred.cols);
-    cout << sum << endl;
+    //cout << sum << endl;
     return sum;
 }
 
 bool isBlurred(const Mat &grayBlurred)
 {
-    return measureBlur(grayBlurred) < 20;
+    return measureBlur(grayBlurred) < 9.8;
 }
 
 Mat getAutoCerrelation(const Mat &blurred)
