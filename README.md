@@ -1,3 +1,5 @@
+！！！The project has stopped development and maintenance.  
+===  
 # MoTu
 魔图秀秀——数字图像处理课程大作业  
 作者：第七组全体成员  
